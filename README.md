@@ -15,7 +15,7 @@
 * typeof 对于基本类型，除了 null 都可以显示正确的类型， typeof null 返回object； 
 ```javascript
 
- typeof 1 // 'number'
+typeof 1 // 'number'
 typeof '1' // 'string'
 typeof undefined // 'undefined'
 typeof true // 'boolean'
@@ -287,3 +287,29 @@ a.__proto__ === Array.prototype; // true
 
 ##### 原型链
 当访问一个对象的某个属性时，会先在这个对象本身属性上查找，如果没有找到，则会去它的__proto__隐式原型上查找，即它的构造函数的prototype，如果还没有找到就会再在构造函数的prototype的__proto__中查找，这样一层一层向上查找就会形成一个链式结构，我们称为原型链。
+
+#### js判断是否是对象
+* 可以通过 Object.prototype.toString.call(xx)。这样我们就可以获得类似 [object Type] 的字符串。
+
+#### js判断是否为对象
+参考 https://juejin.im/post/5cab0c45f265da2513734390
+* 使用 Array.isArray 判断，如果返回 true, 说明是数组
+* 使用 instanceof Array 判断，如果返回true, 说明是数组
+* 使用 Object.prototype.toString.call 判断，如果值是 [object Array], 说明是数组
+```javascript
+
+function fn() {
+    console.log(Array.isArray(arguments));   //false; 因为arguments是类数组，但不是数组
+    console.log(Array.isArray([1,2,3,4]));   //true
+    console.log(arguments instanceof Array); //fasle
+    console.log([1,2,3,4] instanceof Array); //true
+    console.log(Object.prototype.toString.call(arguments)); //[object Arguments]
+    console.log(Object.prototype.toString.call([1,2,3,4])); //[object Array]
+    console.log(arguments.constructor === Array); //false
+    arguments.constructor = Array;
+    console.log(arguments.constructor === Array); //true
+    console.log(Array.isArray(arguments));        //false
+}
+fn(1,2,3,4);
+
+```
