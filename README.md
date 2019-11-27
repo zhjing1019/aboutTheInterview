@@ -425,4 +425,50 @@ storage.getAvatar('jake').then(…);
 // 箭头函数
 const foo = async () => {};
 
-```
+``` 
+
+#### generator
+参考：https://blog.csdn.net/Dora_5537/article/details/90266777
+* Generator 函数是 ES6 提供的一种异步编程解决方案。
+* Generator 函数是一个状态机，封装了多个内部状态。同时，它还是一个遍历器对象生成函数，返回的是一个遍历器对象，遍历器对象可以依次遍历 Generator 函数内部的每一个状态。
+* Generator 函数的两个特征：（1）function关键字与函数名之间有一个星号（*的位置无所谓，通常采用下述写法）；（2）函数体内部使用yield表达式，定义不同的内部状态。
+```javascript
+function* helloWorldGenerator() {
+  yield 'hello';
+  yield 'world';
+  return 'ending';
+}
+ 
+var hw = helloWorldGenerator();
+``` 
+* 上面代码定义了一个 Generator 函数 helloWorldGenerator，它内部有两个yield表达式（hello和world），即该函数有三个状态：hello，world 和 return 语句（结束执行）。
+* 然而，Generator 函数的调用方法与普通函数一样，也是在函数名后面加上一对圆括号。不同的是，调用 Generator 函数后，该函数并不执行，返回的也不是函数运行结果，而是一个指向内部状态的指针对象，也就是遍历器对象（Iterator Object）。
+* 下一步，必须调用遍历器对象的next方法，使得指针移向下一个状态。也就是说，每次调用next方法，内部指针就从函数头部或上一次停下来的地方开始执行，直到遇到下一个yield表达式（或return语句）为止。换言之，Generator 函数是分段执行的，yield表达式是暂停执行的标记，而next方法可以恢复执行。
+```javascript
+hw.next()
+// { value: 'hello', done: false }
+ 
+hw.next()
+// { value: 'world', done: false }
+ 
+hw.next()
+// { value: 'ending', done: true }
+ 
+hw.next()
+// { value: undefined, done: true }
+``` 
+* 调用 Generator 函数，返回一个遍历器对象，代表 Generator 函数的内部指针。以后，每次调用遍历器对象的next方法，就会返回一个有着value和done两个属性的对象。value属性表示当前的内部状态的值，是yield表达式后面那个表达式的值；done属性是一个布尔值，表示是否遍历结束。
+* next()方法会执行generator的代码，然后，每次遇到yield x;就返回一个对象{value: x, done: true/false}，然后“暂停”。返回的value就是yield的返回值，done表示这个generator是否已经执行结束了。如果done为true，则value就是return的返回值。 
+
+#### 垃圾回收机制
+[参考](https://segmentfault.com/a/1190000018605776?utm_source=tag-newest)
++ 基本的垃圾回收算法称为“标记-清除 
+    + 垃圾回收器获取根并“标记”(记住)它们。
+    + 然后它访问并“标记”所有来自它们的引用。
+    + 然后它访问标记的对象并标记它们的引用。所有被访问的对象都被记住
+    + 直到有未访问的引用(可以从根访问)为止
+    + 除标记的对象外，所有对象都被删除。
++ 垃圾回收机制的一些优化
+    + 分代回收——对象分为两组:“新对象”和“旧对象”。许多对象出现，完成它们的工作并迅速结 ，它们很快就会被清理干净。那些活得足够久的对象，会变“老”，并且很少接受检查。
+    + 增量回收——如果有很多对象，并且我们试图一次遍历并标记整个对象集，那么可能会花费一些时间，并在执行中会有一定的延迟。因此，引擎试图将垃圾回收分解为多个部分。然后，各个部分分别执行。这需要额外的标记来跟踪变化，这样有很多微小的延迟，而不是很大的延迟。
+    + 空闲时间收集——垃圾回收器只在 CPU 空闲时运行，以减少对执行的可能影响。
