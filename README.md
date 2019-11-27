@@ -472,3 +472,45 @@ hw.next()
     + 分代回收——对象分为两组:“新对象”和“旧对象”。许多对象出现，完成它们的工作并迅速结 ，它们很快就会被清理干净。那些活得足够久的对象，会变“老”，并且很少接受检查。
     + 增量回收——如果有很多对象，并且我们试图一次遍历并标记整个对象集，那么可能会花费一些时间，并在执行中会有一定的延迟。因此，引擎试图将垃圾回收分解为多个部分。然后，各个部分分别执行。这需要额外的标记来跟踪变化，这样有很多微小的延迟，而不是很大的延迟。
     + 空闲时间收集——垃圾回收器只在 CPU 空闲时运行，以减少对执行的可能影响。
+
+#### 闭包
+* 什么是闭包: 函数funOne返回了函数funTwo；并且函数funTwo能够访问函数funOne中的变量，函数funTwo称为闭包，简单的说，闭包就是函数能够访问另一个函数里的变量
+```javascript
+function funOne() {
+  let a = 1
+  function funTwo() {
+      console.log(a)
+  }
+  return funTwo
+}
+```
+* 闭包解决的问题
+```javascript
+//因为setTimeout是异步函数，所以会等循环都走完以后才执行setTimeout函数
+for ( var i=1; i<=5; i++) {
+	setTimeout( function timer() {
+		console.log( i );
+	}, i*1000 );
+}
+
+```
+* 可以使用闭包解决此问题
+```javascript
+for (var i = 1; i <= 5; i++) {
+  (function(j) {
+    setTimeout(function timer() {
+      console.log(j);
+    }, j * 1000);
+  })(i);
+}
+
+```
+* 也可以使用let来解决
+```javascript
+for (let i=1; i<=5; i++) {
+	setTimeout( function timer() {
+		console.log( i );
+	}, i*1000 );
+}
+
+```
