@@ -315,6 +315,8 @@ fn(1,2,3,4);
 ```
 
 #### ES6 async await
+参考 http://es6.ruanyifeng.com/#docs/async
+[阮一峰的ES6教程](http://es6.ruanyifeng.com/#docs/async)
 * async 函数是什么？一句话，它就是 Generator 函数的语法糖。
 * Generator函数
 ```javascript
