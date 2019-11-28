@@ -578,6 +578,7 @@ window.addEventListener('scroll', debounce(handle, 1000));
   + 例如用户点赞的时候，我们希望用户点第一下的时候就去调用接口，并且成功之后改变点赞按钮的样子，用户就可以立马得到反馈是否star成功了，这个情况适用立即执行的防抖函数，它总是在第一次调用，并且下一次调用必须与前一次调用的时间间隔大于wait才会触发。
 
 * 带有立即执行选项的防抖函数
+此处参考 https://juejin.im/post/5ba34e54e51d450e5162789b#heading-15
 ```javascript
 /**
  * 防抖函数，返回函数连续调用时，空闲时间必须大于或等于 wait，func 才会执行
@@ -631,4 +632,43 @@ window.addEventListener('scroll', debounce(handle, 1000));
 ```
 
 ##### 函数节流
-
+此处参考  https://www.cnblogs.com/youma/p/10559331.html 
+* 当持续触发事件时，保证在一定时间内只调用一次事件处理函数，意思就是说，假设一个用户一直触发这个函数，且每次触发小于既定值，函数节流会每隔这个时间调用一次
+```javascript
+var throttle = function(func, delay) {
+    var prev = Date.now();
+    return function() {
+        var context = this;   //this指向window
+        var args = arguments;
+        var now = Date.now();
+        if (now - prev >= delay) {
+            func.apply(context, args);
+            prev = Date.now();
+        }
+    }
+}
+function handle() {
+    console.log(Math.random());
+}
+window.addEventListener('scroll', throttle(handle, 1000));
+```
+* 这个节流函数利用时间戳让第一次滚动事件执行一次回调函数，此后每隔1000ms执行一次，在小于1000ms这段时间内的滚动是不执行的
+```javascript
+var throttle = function(func, delay) {
+    var timer = null;
+    return function() {
+        var context = this;
+        var args = arguments;
+        if (!timer) {
+            timer = setTimeout(function() {
+                func.apply(context, args);
+                timer = null;
+            }, delay);
+        }
+    }
+}
+function handle() {
+    console.log(Math.random());
+}
+window.addEventListener('scroll', throttle(handle, 1000));
+``` 
